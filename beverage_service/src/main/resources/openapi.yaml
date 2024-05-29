@@ -1,0 +1,63 @@
+# open api speicification document - header with version
+# document should be named openapi.yaml or openapi.json
+openapi: "3.0.4"
+# general information
+info:
+  title: Beverages Retailer
+  version: "1.0"
+servers:
+  - url: http://localhost:8080/v1
+    description: Development Server
+# reusable elements within the API specification
+components:
+  # data elements (JSON Schema)
+  schemas:
+    BottleDTO:
+      type: object
+      required:
+        - name
+        - volume
+        - isAlcoholic
+        - volumePercent
+        - price
+        - supplier
+        - inStock
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        volume:
+          type: number
+        isAlcoholic:
+          type: boolean
+        volumePercent:
+          type: number
+        price:
+          type: number
+        supplier:
+          type: string  
+        inStock:
+          type: number 
+        href:
+          type: string
+      xml:
+        name: beverage
+   
+# resources (one of the REST principles)
+paths:
+  /beverages/all:
+    description: All Beverages
+    get:
+      summary: Get all Beverages
+      # possible responses and their parameters
+      responses:
+        200:
+          description: All Beverages.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BottleDTO"
+        400:
+          description: No Beverages available.
+  

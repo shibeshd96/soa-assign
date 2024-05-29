@@ -1,0 +1,37 @@
+# Stage 1: Build the application
+FROM openjdk:17-jdk AS builder
+
+#Enviroment Variable
+ENV APP_HOME=/root/dev/BeverageService
+ENV SWAGGER_JSON=/root/dev/BeverageService/src/main/resources/openapi.yaml
+
+# Working Directory
+WORKDIR $APP_HOME
+
+# Copy the application source code
+COPY . $APP_HOME
+
+# Build the application
+RUN ./gradlew build
+
+# Stage 2: Create the runtime image
+FROM openjdk:17-jdk-slim
+
+# Set the working directory in the runtime image
+WORKDIR /root/
+
+# Copy the built JAR file from the builder stage
+COPY --from=builder /root/dev/BeverageService/build/libs/beverage_service-all.jar .
+
+# Expose the port that the service will run on (8081 in this case)
+EXPOSE 8081
+
+# Command to start the Beverage Service application
+CMD ["java", "-jar", "beverage_service-all.jar"]
+
+#FROM openjdk:17-jdk AS builder
+#ENV APP_HOME=/root/dev/db
+#WORKDIR $APP_HOME
+#COPY . $APP_HOME
+#RUN ./gradlew build
+#CMD ["java", "-jar", "build/libs/beverage_service-all.jar"]

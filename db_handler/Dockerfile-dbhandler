@@ -1,0 +1,42 @@
+# Stage 1: Build the application
+FROM openjdk:17-jdk AS builder
+
+# Environment Variable
+ENV APP_HOME=/root/dev/BeverageService
+
+# Working Directory
+WORKDIR $APP_HOME
+
+# Copy the application source code
+COPY . $APP_HOME
+
+# Copy the data.json file
+COPY data.json /root/dev/BeverageService/db/data.json
+
+# Build the application
+RUN ./gradlew build
+
+# Stage 2: Create the runtime image
+FROM openjdk:17-jdk-slim
+
+# Working Directory in the runtime image
+WORKDIR /root/
+
+# Copy the built JAR file from the builder stage
+COPY --from=builder /root/dev/BeverageService/build/libs/db_handler-all.jar .
+
+# Copy the data.json file from the builder stage
+COPY --from=builder /root/dev/BeverageService/db/data.json /root/dev/BeverageService/db/data.json
+
+# Expose the port that the service will run on (9999 in this case)
+EXPOSE 9999
+
+# Command to start the Beverage Service application
+CMD ["java", "-jar", "db_handler-all.jar"]
+
+#FROM openjdk:17-jdk
+#ENV APP_HOME=/root/dev/db_handler
+#WORKDIR $APP_HOME
+#COPY . $APP_HOME
+#RUN ./gradlew build
+#CMD ["java", "-jar", "build/libs/db_handler-all.jar"]

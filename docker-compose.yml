@@ -1,0 +1,60 @@
+version: "3.2"
+services:
+  a2:
+    image: alpine
+    container_name: a2
+    stdin_open: true
+    tty: true
+    networks:
+      - alpine-net
+
+  db:
+    image: db-handler:v1
+    build:
+      context: ./db_handler
+      dockerfile: Dockerfile-dbhandler
+    container_name: db
+    volumes:
+      - a-vol:/db
+    tty: true
+    networks:
+      - alpine-net
+    depends_on:
+      - a2
+
+  beverageservice:
+    image: beverage:v1
+    build:
+      context: ./beverage_service
+      dockerfile: Dockerfile-beverageservice
+    container_name: beverageservice
+    tty: true
+    ports:
+      - 8080:8081
+    networks:
+      - alpine-net
+    depends_on:
+      - a2
+      - db
+
+#  managementservice:
+#    image: management:v1
+#    build:
+#      context: ./management_service
+#      dockerfile: Dockerfile-management
+#    container_name: managementservice
+#    tty: true
+#    ports:
+#      - 8090:8091
+#    networks:
+#      - alpine-net
+#    depends_on:
+#      - a2
+#      - db
+
+volumes:
+  a-vol:
+
+networks:
+  alpine-net:
+    driver: bridge

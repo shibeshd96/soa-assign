@@ -1,0 +1,30 @@
+# Stage 1: Build the application
+FROM openjdk:17-jdk AS builder
+
+#Enviroment Variable
+ENV APP_HOME=/root/dev/BeverageService
+ENV SWAGGER_JSON=/root/dev/BeverageService/src/main/resources/manager.yaml
+ENV PORT 8090
+
+# Working Directory
+WORKDIR $APP_HOME
+
+# Copy the application source code
+COPY . .
+
+# Build the application
+RUN ./gradlew build
+
+# Stage 2: Create the runtime image
+FROM openjdk:17-jdk-slim
+
+WORKDIR /root/
+
+# Copy the built JAR file from the builder stage
+COPY --from=builder /root/dev/BeverageService/build/libs/BeverageService-all.jar .
+
+# Expose the port that the service will run on (8080 in this case)
+EXPOSE 8090
+
+# Command to start the Management Service application
+CMD ["java", "-jar", "BeverageService-all.jar"]

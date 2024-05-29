@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "name": "Gorkha",
+    "volume": 7.5,
+    "isAlcoholic": true,
+    "volumePercent": 20.0,
+    "price": 20.0,
+    "supplier": "Nepal Brewery",
+    "inStock": 20
+  },
+  {
+    "id": 2,
+    "name": "Barasinghe",
+    "volume": 7.5,
+    "isAlcoholic": true,
+    "volumePercent": 20.0,
+    "price": 20.0,
+    "supplier": "Barasinghe Brewery",
+    "inStock": 20
+  }
+]
